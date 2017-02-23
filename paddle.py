@@ -1,4 +1,4 @@
-# page 211
+# page 215
 
 from Tkinter import *
 import random
@@ -16,6 +16,7 @@ class Ball:
       self.y = -3
       self.canvas_height = self.canvas.winfo_height()
       self.canvas_width = self.canvas.winfo_width()
+      self.hit_bottom = False
 
    def hit_paddle(self, pos):
       paddle_pos = self.canvas.coords(self.paddle.id)
@@ -24,14 +25,14 @@ class Ball:
             return True
          return False
 
-   def draw(self):
-      self.canvas.move(self.id, self.x, self.y)
+   def draw(self):   
+      self.canvas.move(self.id, self.x, self.y)  
       pos = self.canvas.coords(self.id)
       print(self.canvas.coords(self.id))
       if pos[1] <= 0:
-         self.y = 1
+         self.y = 3
       if pos[3] >= self.canvas_height:
-         self.y = -1
+         self.hit_bottom = True
       if self.hit_paddle(pos) == True:
          self.y = -3
       if pos[0] <= 0:
@@ -50,7 +51,12 @@ class Paddle:
       self.canvas.bind_all('<KeyPress-Right>', self.turn_right)
 
    def draw(self):
-      pass
+      self.canvas.move(self.id, self.x, 0)
+      pos = self.canvas.coords(self.id)
+      if pos[0] <= 0:
+          self.x = 0
+      elif pos[2] >= self.canvas_width:
+          self.x = 0
 
    def turn_left(self, evt):
       self.x = -2
@@ -70,10 +76,10 @@ paddle = Paddle(canvas, 'blue')
 ball = Ball(canvas, paddle, 'orange')
 
 while 1: 
-   ball.draw()
-   paddle.draw()
+   if ball.hit_bottom == False:
+       ball.draw()
+       paddle.draw()
    tk.update_idletasks()
    tk.update()
    time.sleep(0.01)
-
 
